@@ -21,6 +21,11 @@ export default class Header extends Component {
       menuToggler.style.visibility='hidden';
       navMenu.className = 'navbar-nav navbar-expand order-2 ml-auto';
     }
+    const camListIcon = document.getElementById('camListIcon');
+    const offCanvas = document.getElementById('listadoCamaras');
+    camListIcon.addEventListener('click', function () {
+      offCanvas.classList.toggle('open');
+  });
     window.addEventListener("scroll", this.handleScroll);
   }
 
@@ -53,7 +58,7 @@ export default class Header extends Component {
               <button id="usernav-menuToggler" className="navbar-toggler order-0 p-0" type="button" data-toggle="collapse" data-target="#usernav"
                   aria-controls="usernav" aria-expanded="false" aria-label="Toggle navigation">
                   {/* {#unless user.name} */}
-                  <i className="far fa-user-circle fa-2x" id="thumbIcon"></i>
+                  {/* <i className="far fa-user-circle fa-2x" style={{lineHeight: -2}} id="thumbIcon"></i> */}
                   {/* {else} */}
                   <img src="/assets/img/user-image.jpg" alt="Menu" id="thumbIcon"/>
                   {/* <img src="{{user.profile-image}}" alt="Menu"/> */}
