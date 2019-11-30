@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="favicon.png" />
+    <link rel="icon" type="image/png" href="/assets/img/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" 
@@ -28,77 +29,14 @@
     <script async="" src="https://www.google-analytics.com/analytics.js"></script>
     <!-- fontawesome kit -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+
+
+    <!-- Place your kit's code here 
+    <script src="https://kit.fontawesome.com/8f07fa16d4.js" crossorigin="anonymous"></script>-->
     <title>FreeWaves - Las mejores camaras en vivo de sudamerica</title>
   </head>
-  <body>
+  <body class="d-flex flex-column">
     <noscript>Javascript required.</noscript>
-    <div id="app" class="d-flex flex-column"></div>
-    <script>
-      $(function () {
-              'use strict'
-
-              var doc = document.documentElement;
-              var w = window;
-
-              var prevScroll = w.scrollY || doc.scrollTop;
-              var curScroll;
-              var direction = 0;
-              var prevDirection = 0;
-
-              var header = document.getElementById('header');
-              
-              var checkScroll = function() {
-
-                  /*
-                  ** Find the direction of scroll
-                  ** 0 - initial, 1 - up, 2 - down
-                  */
-
-                  curScroll = w.scrollY || doc.scrollTop;
-                  if (curScroll > prevScroll) { 
-                  //scrolled up
-                  direction = 2;
-                  }
-                  else if (curScroll < prevScroll) { 
-                  //scrolled down
-                  direction = 1;
-                  }
-
-                  if (direction !== prevDirection) {
-                  toggleHeader(direction, curScroll);
-                  }
-                  
-                  prevScroll = curScroll;
-              };
-
-              var toggleHeader = function(direction, curScroll) {
-                  if (direction === 2 && curScroll > 40) { 
-                  
-                  //replace 52 with the height of your header in px
-
-                  header.classList.add('hide');
-                  prevDirection = direction;
-                  }
-                  else if (direction === 1) {
-                  header.classList.remove('hide');
-                  prevDirection = direction;
-                  }
-              };
-              
-              window.addEventListener('scroll', checkScroll);
-
-              if(window.innerWidth > 992) {
-                  const navMenu = document.getElementById('navbarSupportedContent');
-                  const menuToggler = document.getElementById('menuToggler');
-                  menuToggler.style.visibility='hidden';
-                  navMenu.className = 'navbar-nav navbar-expand order-2 ml-auto';
-              }
-              //list cam menu toggler
-              $('[data-toggle="offcanvas"]').on('click', function () {
-                  $('.offcanvas-collapse').toggleClass('open')
-              });
-
-          })
-  </script>
+    <div id="app"></div>
   </body>
 </html>
