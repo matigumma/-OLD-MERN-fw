@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 //import 'whatwg-fetch';
 import axios from 'axios'
-
+import Slider from '../../components/Slider/Slider';
+import Footer from '../../components/Footer/Footer';
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      user: null,
       description : '',
       error : ''
     };
@@ -15,7 +17,12 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    axios.get('/site/description')
+    if(this.props.user){
+      this.setState({
+        user: this.props.user
+      })
+    }
+/*     axios.get('/site/description')
       .then((response) => {
         this.setState({
           description : response.data.description
@@ -25,19 +32,17 @@ class Home extends Component {
         this.setState({
           error : error.response.data.erorrMessage
         })
-      })
+      }) */
   }
 
 
   render() {
-    const {error, description} = this.state;
     return (
-      <>
-        <h1>Hola</h1>
-        <p>
-        {error ? ' description!' : description}
-        </p>
-      </>
+      <div>
+        <Slider />
+        
+        <Footer />
+      </div>
     );
   }
 }

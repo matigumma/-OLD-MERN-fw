@@ -1,6 +1,14 @@
 const Counter = require('../../models/Counter');
+const User = require('../../models/User');
 
 module.exports = (app) => {
+  app.get('/api/user/list', (req, res, next) => {
+    User.find()
+      .exec()
+      .then((list) => res.json(list))
+      .catch((err) => next(err))
+  });
+
   app.get('/api/counters', (req, res, next) => {
     Counter.find()
       .exec()

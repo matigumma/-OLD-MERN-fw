@@ -1,38 +1,43 @@
 const express = require('express');
-const fs = require('fs');
+//const fs = require('fs');
 const historyApiFallback = require('connect-history-api-fallback');
-const mongoose = require('mongoose');
 const path = require('path');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
-const config = require('../config/config');
-const webpackConfig = require('../webpack.config');
-
+//const config = require('../config/config');
 const isDev = process.env.NODE_ENV !== 'production';
+const webpackConfig = require('../webpack.config');
 const port  = process.env.PORT || 8080;
 
-
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
+const passport = require('./passport')
+const dbConnection = require('../config/db') // loads our connection to the mongo database
+const app = express();
 // Configuration
 // ================================================================================================
-
-// Set up Mongoose
-mongoose.connect(isDev ? config.db_dev : config.db , {
-  autoReconnect: true,
-  useCreateIndex: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-});
-mongoose.Promise = global.Promise;
-
-const app = express();
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));//false?
 app.use(express.json());
+//session:
+app.use(
+	session({
+		secret: process.env.APP_SECRET || 'this is the default passphrase',
+		store: new MongoStore({ mongooseConnection: dbConnection }),
+		resave: false,
+		saveUninitialized: false
+	})
+)
+
+// ===== Passport ====
+app.use(passport.initialize())
+app.use(passport.session()) // will call the deserializeUser
+
 
 // API routes
-require('./routes')(app);
+//require('./routes')(app);
+app.use('/auth', require('./routes/auth'));
 
 if (isDev) {
   const compiler = webpack(webpackConfig);
