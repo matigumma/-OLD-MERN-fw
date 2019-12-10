@@ -5,7 +5,7 @@ const strategy = new GoogleStrategy(
 	{
 		clientID: process.env.GOOGLE_CLIENT_ID || '1096100746206-rn0m1qrrkfcl7evp4fe3ik8ig0abp90q.apps.googleusercontent.com',
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'r5EVkZamAvM2r7A0NXXCxEci',
-		callbackURL: '/auth/google/callback'
+		callbackURL: '/google/callback'
 	},
 	function(token, tokenSecret, profile, done) {
 		// testing

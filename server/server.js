@@ -38,6 +38,7 @@ app.use(passport.session()) // will call the deserializeUser
 // API routes
 //require('./routes')(app);
 app.use('/auth', require('./routes/auth'));
+app.use('/api', require('./routes/api'));
 
 if (isDev) {
   const compiler = webpack(webpackConfig);

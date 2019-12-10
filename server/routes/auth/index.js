@@ -5,6 +5,7 @@ const User = require('../../models/User')
 const passport = require('../../passport')
 
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+
 router.get(
 	'/google/callback',
 	passport.authenticate('google', {

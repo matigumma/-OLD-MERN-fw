@@ -1,27 +1,21 @@
 import React, { Component } from 'react';
 //import 'whatwg-fetch';
-import axios from 'axios'
+//import axios from 'axios'
 import Slider from '../../components/Slider/Slider';
 import Footer from '../../components/Footer/Footer';
+import CamListHome from '../../components/CamListHome';
+import MediumHome from '../../components/MediumHome'
 
 class Home extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      user: null,
-      description : '',
-      error : ''
-    };
+    this.state = {};
 
   }
 
   componentDidMount() {
-    if(this.props.user){
-      this.setState({
-        user: this.props.user
-      })
-    }
+    this.setState(this.props.userState)
 /*     axios.get('/site/description')
       .then((response) => {
         this.setState({
@@ -40,7 +34,8 @@ class Home extends Component {
     return (
       <div>
         <Slider />
-        
+        <CamListHome userState={this.props.userState}/>
+        <MediumHome userState={this.props.userState}/>
         <Footer />
       </div>
     );

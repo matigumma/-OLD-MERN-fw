@@ -4,13 +4,13 @@ import classnames from "classnames";
 //import './styles.scss';
 import 'bootstrap/dist/js/bootstrap.bundle';
 
-function ListadoCamaras(props){
-console.log(props.camaras.length)
+const ListadoCamaras = React.memo(function ListadoCamaras(props){
+//console.log(props.camaras.length)
   if(props.camaras.length > 0){
     return(
       <ul className="navbar-nav mr-auto">
         {props.camaras.map((cam) => (      
-          <Link className="nav-link" to={'/cam/'+cam.id} onClick={this.toggleListadoCamaras} key={cam.id}>
+          <Link className="nav-link" to={'/cam/'+cam.id} onClick={props.toggle} key={cam.id}>
             <li className="nav-item text-right" >
               {cam.title}
             </li>
@@ -21,26 +21,70 @@ console.log(props.camaras.length)
     }else{
       return <img className="no-list float-right" src="/assets/img/alert.png"/>
     }
+})
 
-}
-function UserPic(props){
-  if (props.photos && props.photos.length > 0){
-    if(props.photos[0]!=''){
-      return <img id="thumbIcon" className="far fa-user-circle fa-2x" src={props.photos[0]}/>
+const UserPic = React.memo(function UserPic(props){
+  if (props.userState.loggedIn){
+    if(props.userState.user.photos.length > 0){
+      return <img id="thumbIcon" className="" src={props.userState.user.photos[0]}/>
     }else{
-      return <img id="thumbIcon" className="far fa-user-circle fa-2x" src="/assets/img/user-image.jpg"/>
+      //return <img id="thumbIcon" className="far fa-user-circle fa-2x" src="/assets/img/user-image.jpg"/>
+      //return <i id="thumbIcon" className="fa fa-user fa-2x" aria-hidden="true"></i>
+      return <i id="thumbIcon" className="fa fa-user-circle-o fa-1x text-primary" aria-hidden="true"></i>
     }
   }else{
-    return <i id="thumbIcon" className="far fa-user-circle fa-2x"></i>
+    console.log(props.userState.loggedIn)
+    return <i id="thumbIcon" className="fa fa-user-circle fa-1x" aria-hidden="true"></i>
   }
-}
+})
+
+const HolaUser = React.memo(function HolaUser(props){
+    if(props.userState.loggedIn){
+      return <li className="nav-item">{'Hola '+props.userState.user.local.username}</li>
+    } else {
+      return ''
+    }
+    //<HolaUser userState={this.props.state}/>
+})
+
+const UserNavMenu = React.memo(function UserNavMenu(props){
+  console.log('UserNavMenu: ',props)
+    if(props.userState.loggedIn){
+      return (
+      <ul className="navbar-nav ml-2">
+        <li className="nav-item">
+          <span className="nav-link">
+            <i className="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp;{'Hola ' + props.userState.user.local.username }
+          </span>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to={'/user/' + props.userState.user._id} >User profile</Link>
+        </li>
+        <li className="nav-item">
+          <Link to="#" className="nav-link" onClick={props._logout}>LogOut</Link>
+        </li>
+      </ul>
+      )
+    } else {
+      return (
+        <ul className="navbar-nav ml-2">
+          <li className="nav-item">
+            <Link className="nav-link" to="/signup">Registro</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/login">LogIn</Link>
+          </li>
+        </ul>
+      )
+    }
+})
 
 class Header extends Component {
   constructor() {
     super();
 
     this.state = {
-      user:null,
+      state:[],
       listadoCamaras: [
         {
           id:1,
@@ -56,16 +100,15 @@ class Header extends Component {
 
     };
   }
-
+/* 
+  componentWillMount = () => {
+    this.setState({
+      state:this.props.state
+    })
+  } */
   // Adds an event listener when the component is mount.
   
   componentDidMount = () => {
-    if(this.props.user){
-      this.setState({
-        user: this.props.user
-      })
-    }
-
     if(window.innerWidth > 992) {
       const navMenu = document.getElementById('navbarSupportedContent');
       const menuToggler = document.getElementById('menuToggler');
@@ -98,7 +141,8 @@ class Header extends Component {
       prevScrollpos: currentScrollPos,
       visible
     });
-  };
+  }
+
 
   
   render() {
@@ -111,7 +155,7 @@ class Header extends Component {
               
               <button id="usernav-menuToggler" className="navbar-toggler order-0 p-0" type="button" data-toggle="collapse" data-target="#usernav"
                   aria-controls="usernav" aria-expanded="false" aria-label="Toggle navigation">
-                    <UserPic user={this.state.user}/>
+                    <UserPic userState={this.props.state}/>
               </button>
 
               <Link className="navbar-brand order-1 ml-2" to="/" alt="Logo Freewaves.live">
@@ -132,6 +176,7 @@ class Header extends Component {
               
               <div className="collapse navbar-collapse order-5" id="navbarSupportedContent">
                   <ul className="navbar-nav ml-2">
+                      
                       <li className="nav-item">
                           <Link className="nav-link" to="/camaras">Camaras</Link>
                       </li>
@@ -146,27 +191,12 @@ class Header extends Component {
                       </li>
                   </ul>
               </div>
+
               <div className="navbar-collapse collapse order-6" id="usernav">
-                  <ul className="navbar-nav ml-2">
-                      {/* {#unless user.name} */}
-                      <li className="nav-item">
-                          <Link className="nav-link" to="/users/signin">Register</Link>
-                      </li>
-                      <li className="nav-item">
-                          <Link className="nav-link" to="/users/signin">SignIn</Link>
-                      </li>
-                      <li className="nav-item">
-                          <Link className="nav-link" to="/users/signout">User profile</Link>
-                      </li>
-                      <li className="nav-item">
-                          <Link className="nav-link" to="/users/signout">Sign Out</Link>
-                      </li>
-                      {/* {else} */}
-                      {/* {/unless} */}
-                  </ul>
+                  <UserNavMenu userState={this.props.state} _logout={this.props._logout} />
               </div>
               <div id="listadoCamaras" className="navbar-collapse offcanvas-collapse">                  
-                  <ListadoCamaras camaras={this.state.listadoCamaras} />
+                  <ListadoCamaras camaras={this.state.listadoCamaras} toggle={this.toggleListadoCamaras} />
               </div>
       </nav>
     );

@@ -6,48 +6,11 @@ import LoginForm from '../Auth/LoginForm.jsx'
 import SignupForm from '../Auth/SignupForm.jsx'
 import Header from '../Header/Header'
 import Home from '../../pages/Home/Home'
+import CameraView from '../../pages/CameraView'
 
-const DisplayLinks = props => {
-	if (props.loggedIn) {
-		return (
-			<nav className="navbar">
-				<ul className="nav">
-					<li className="nav-item">
-						<Link to="/" className="nav-link">
-							Home
-						</Link>
-					</li>
-					<li>
-						<Link to="#" className="nav-link" onClick={props._logout}>
-							Logout
-						</Link>
-					</li>
-				</ul>
-			</nav>
-		)
-	} else {
-		return (
-			<nav className="navbar">
-				<ul className="nav">
-					<li className="nav-item">
-						<Link to="/" className="nav-link">
-							Home
-						</Link>
-					</li>
-					<li className="nav-item">
-						<Link to="/login" className="nav-link">
-							login
-						</Link>
-					</li>
-					<li className="nav-item">
-						<Link to="/signup" className="nav-link">
-							sign up
-						</Link>
-					</li>
-				</ul>
-			</nav>
-		)
-	}
+function UserProfile(props){
+	console.log(props)
+	return ('Hola User profile')
 }
 
 class App extends Component {
@@ -60,11 +23,10 @@ class App extends Component {
 		this._logout = this._logout.bind(this)
 		this._login = this._login.bind(this)
 	}
-	componentDidMount() {
+	componentWillMount() {
 		axios.get('/auth/user').then(response => {
-			console.log(response.data)
 			if (!!response.data.user) {
-				console.log('THERE IS A USER')
+				console.log('THERE IS A USER: ', response.data.user)
 				this.setState({
 					loggedIn: true,
 					user: response.data.user
@@ -101,7 +63,6 @@ class App extends Component {
 			.then(response => {
 				console.log(response)
 				if (response.status === 200) {
-					// update the state
 					this.setState({
 						loggedIn: true,
 						user: response.data.user
@@ -111,31 +72,21 @@ class App extends Component {
 	}
 
 	render() {
-		return (
-			<Router>
-			<div className="h-100">
-				<Header user={this.state.user} />
-				<main className="h-100">
-					{/* LINKS to our different 'pages' */}
-					{/* <DisplayLinks _logout={this._logout} loggedIn={this.state.loggedIn} /> */}
-					{/*  ROUTES */}
-					{/* <Route exact path="/" component={Home} /> */}
-					<Route exact path="/" render={() => <Home user={this.state.user} />} />
-					<Route
-						exact
-						path="/login"
-						render={() =>
-							<LoginForm
-								_login={this._login}
-								_googleSignin={this._googleSignin}
-							/>}
-					/>
-					<Route exact path="/signup" component={SignupForm} />
-					{/* <LoginForm _login={this._login} /> */}
-				</main>
-			</div>
-			</Router>
-		)
+	return (
+	<Router>
+	<div className="h-100">
+		<Header state={this.state} _logout={this._logout} />
+		<main className="h-100">
+			<Route exact path="/" render={() => <Home userState={this.state} />} />
+			<Route exact path="/login" render={() => <LoginForm _login={this._login} _googleSignin={this._googleSignin} />}/>
+			<Route exact path="/user/:id" render={() => <UserProfile userState={this.state} />}/>
+			<Route exact path="/cam/:id" render={(props) => <CameraView {...props} userState={this.state} />}/>
+			{/* <Route exact path="/cam/:id" component={CameraView} userState={this.state}/> */}
+			<Route exact path="/signup" component={SignupForm} />
+		</main>
+	</div>
+	</Router>
+	)
 	}
 }
 
