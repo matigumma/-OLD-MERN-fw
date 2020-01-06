@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 
 #install dependencies
 COPY package.json .
-
+RUN sudo apt-get update -y && \
+    sudo apt-get install python
 RUN npm install --quiet && \
     npm cache clean --force
 #RUN npm rebuild node-sass
