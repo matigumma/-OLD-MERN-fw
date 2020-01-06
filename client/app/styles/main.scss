@@ -1,3 +1,4 @@
+$primary: rgba(0,140,200,0.9);
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
 /*
@@ -44,8 +45,9 @@ header.bd{
 /*carousel front*/
 .carousel-caption{
     font-family: 'ostrich_sansheavy'!important;
-    font-size: 1.5rem;    
-    margin-bottom: 4rem;
+    font-size: 1.3rem;    
+    bottom: 0;
+    top : 20px;
     text-shadow: 2px 2px 2px #343a40;
 }
 .carousel-caption h1{
@@ -72,7 +74,9 @@ header.bd{
 }
 
 /*fullscreen user nav*/
-
+.nav-itemListadoCamaras:hover{
+    background-color: #414549;
+}
 #camListIcon{
     display: block;
     width: 30px;
@@ -132,16 +136,44 @@ div.espuma{
 .list-title{
     font-family: 'ostrich_sansheavy'!important;
 }
-img.cimg {
+.cimg {
     width: 90px;
     height: 90px;
     object-fit: cover;
 }
-img.adimg{
+.adimg{
+    width: -webkit-fill-available;
     max-width: 100%; 
     max-height:196px;
 }
-.redondel {
+.redondel1 {
+    background-image: url('/assets/img/guy-kawasaki-iij-QvyRAnM-unsplash.jpg');
+    background-position: top;
+    background-size: cover;
+    border: 4px double rgba(0,140,200,0.9);
+    width: 260px;
+    height: 260px;
+    @include media-breakpoint-down(lg){
+            width: 180px;
+            height: 180px;
+    }
+}
+.redondel2 {
+    background-image: url('/assets/img/guy-kawasaki-iij-QvyRAnM-unsplash.jpg');
+    background-position: top;
+    background-size: cover;
+    border: 4px double rgba(0,140,200,0.9);
+    width: 260px;
+    height: 260px;
+    @include media-breakpoint-down(lg){
+            width: 180px;
+            height: 180px;
+    }
+}
+.redondel3 {
+    background-image: url('/assets/img/guy-kawasaki-iij-QvyRAnM-unsplash.jpg');
+    background-position: top;
+    background-size: cover;
     border: 4px double rgba(0,140,200,0.9);
     width: 260px;
     height: 260px;
@@ -215,6 +247,9 @@ img.adimg{
     main{
         margin-top:40px;
     }
+    a.navbar-brand{
+        font-size: xx-small!important;
+    }
     a.navbar-brand img{
         width: 150px;
         height: auto;
@@ -226,6 +261,83 @@ img.adimg{
     }
 }
 
+.hovereffect {
+    width: 100%;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    cursor: default;
+  }
+  
+  .hovereffect .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+  }
+  
+  .hovereffect img {
+    display: block;
+    position: relative;
+    -webkit-transition: all 0.4s ease-in;
+    transition: all 0.4s ease-in;
+  }
+  
+  .hovereffect:hover img {
+    filter: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="filter"><feColorMatrix type="matrix" color-interpolation-filters="sRGB" values="0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0" /><feGaussianBlur stdDeviation="3" /></filter></svg>#filter');
+    filter: grayscale(1) blur(3px);
+    -webkit-filter: grayscale(1) blur(3px);
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+  
+  .hovereffect h2 {
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    font-size: 17px;
+    margin-top:25px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .hovereffect a.info {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px 14px;
+    border: 1px solid #fff;
+    /* margin: 50px 0 0 0; */
+    background-color: transparent;
+  }
+  
+  .hovereffect a.info:hover {
+    box-shadow: 0 0 5px #fff;
+  }
+  
+  .hovereffect a.info, .hovereffect h2 {
+    -webkit-transform: scale(0.7);
+    -ms-transform: scale(0.7);
+    transform: scale(0.7);
+    -webkit-transition: all 0.4s ease-in;
+    transition: all 0.4s ease-in;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    color: #fff;
+    text-transform: uppercase;
+  }
+  
+  .hovereffect:hover a.info, .hovereffect:hover h2 {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
 /* form classess
 .form-label-group {
 position: relative;

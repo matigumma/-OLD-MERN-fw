@@ -1,142 +1,179 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+/* import React, { Component } from 'react' */
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import axios from 'axios'
 import './App.scss'
 import LoginForm from '../Auth/LoginForm.jsx'
 import SignupForm from '../Auth/SignupForm.jsx'
 import Header from '../Header/Header'
 import Home from '../../pages/Home/Home'
+import CameraView from '../../pages/CameraView'
+import NotFound from '../../pages/NotFound'
+import Loading from '../Loading'
 
-const DisplayLinks = props => {
-	if (props.loggedIn) {
-		return (
-			<nav className="navbar">
-				<ul className="nav">
-					<li className="nav-item">
-						<Link to="/" className="nav-link">
-							Home
-						</Link>
-					</li>
-					<li>
-						<Link to="#" className="nav-link" onClick={props._logout}>
-							Logout
-						</Link>
-					</li>
-				</ul>
-			</nav>
-		)
-	} else {
-		return (
-			<nav className="navbar">
-				<ul className="nav">
-					<li className="nav-item">
-						<Link to="/" className="nav-link">
-							Home
-						</Link>
-					</li>
-					<li className="nav-item">
-						<Link to="/login" className="nav-link">
-							login
-						</Link>
-					</li>
-					<li className="nav-item">
-						<Link to="/signup" className="nav-link">
-							sign up
-						</Link>
-					</li>
-				</ul>
-			</nav>
-		)
-	}
+const baseUrl = 'http://192.168.88.234:3000/api'
+
+async function getCameras() {
+    try {
+        const response = await axios({
+            url: `${baseUrl}/cameras-list`,
+            method: 'GET'
+        })
+        
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function getAds() {
+    try {
+        const response = await axios({
+            url: `${baseUrl}/anuncios-cameras-list`,
+            method: 'GET'
+        })
+        
+        return response
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-class App extends Component {
-	constructor() {
-		super()
-		this.state = {
-			loggedIn: false,
-			user: null
-		}
-		this._logout = this._logout.bind(this)
-		this._login = this._login.bind(this)
-	}
-	componentDidMount() {
-		axios.get('/auth/user').then(response => {
-			console.log(response.data)
-			if (!!response.data.user) {
-				console.log('THERE IS A USER')
-				this.setState({
-					loggedIn: true,
-					user: response.data.user
-				})
-			} else {
-				this.setState({
-					loggedIn: false,
-					user: null
-				})
-			}
-		})
-	}
+function UserProfile(props){
+	console.log(props)
+	return ('Hola User profile')
+}
 
-	_logout(event) {
-		event.preventDefault()
-		console.log('logging out')
-		axios.post('/auth/logout').then(response => {
-			console.log(response.data)
-			if (response.status === 200) {
-				this.setState({
-					loggedIn: false,
-					user: null
-				})
-			}
-		})
-	}
-
-	_login(username, password) {
-		axios
-			.post('/auth/login', {
+async function getUser() {
+    try {
+        const response = await axios({
+            url: '/auth/user',
+            method: 'GET'
+        })
+        
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function getLogout(user) {
+    try {
+        const response = await axios({
+			url: '/auth/logout',
+			data: {user},
+            method: 'POST'
+        })
+        
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function getLogin(username, password) {
+    try {
+        const response = await axios({
+			url: '/auth/login',
+			data: {
 				username,
 				password
-			})
-			.then(response => {
-				console.log(response)
-				if (response.status === 200) {
-					// update the state
-					this.setState({
-						loggedIn: true,
-						user: response.data.user
-					})
-				}
-			})
+			},
+            method: 'POST'
+        })
+        
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const App = () =>{
+	const [loggedIn, setLoggedIn] = useState(false)
+	const [splash, setSplash] = useState(true)
+	const [user, setUser] = useState(null)
+	const [cameras, setCameras] = useState([])
+    const [ads, setAds] = useState([])
+	const [wannaLogin, setWannaLogin] = useState(false)
+
+	useEffect(()=>{
+		async function loadUser () {//first load of app
+            const res = await getUser()
+			
+			if (!!res.data.user) {
+				console.log('THERE IS A USER: ', res.data.user)
+				setLoggedIn(true)
+				setUser(res.data.user)
+			} else {
+				setTimeout(() => {
+					setWannaLogin(true)
+				}, 10000);
+			}
+        }
+       
+		loadUser()
+		
+//cams
+
+		async function loadAds () {
+			const resA = await getAds()
+			if(resA.status === 200) {
+				console.log('anuncios: ',resA)
+				setAds(resA.data)
+				//setIsLoading(false)
+				setSplash(false)
+			}
+		}
+		async function loadCams () {
+			const res = await getCameras()
+			console.log('camaras: ',res)
+			if(res.status === 200) {
+				setCameras(res.data)
+				loadAds()
+			}
+		}
+
+		loadCams()
+
+	},[])
+
+	async function _logout(event) {
+		event.preventDefault()
+		console.log('logging out')
+		const res = await getLogout()
+		if (res.status === 200) {
+			setLoggedIn(false)
+			setUser(null)
+		}else{
+			console.log('Err while trying to logout.. try again')
+		}
 	}
 
-	render() {
-		return (
-			<Router>
-			<div className="h-100">
-				<Header user={this.state.user} />
-				<main className="h-100">
-					{/* LINKS to our different 'pages' */}
-					{/* <DisplayLinks _logout={this._logout} loggedIn={this.state.loggedIn} /> */}
-					{/*  ROUTES */}
-					{/* <Route exact path="/" component={Home} /> */}
-					<Route exact path="/" render={() => <Home user={this.state.user} />} />
-					<Route
-						exact
-						path="/login"
-						render={() =>
-							<LoginForm
-								_login={this._login}
-								_googleSignin={this._googleSignin}
-							/>}
-					/>
-					<Route exact path="/signup" component={SignupForm} />
-					{/* <LoginForm _login={this._login} /> */}
-				</main>
-			</div>
-			</Router>
-		)
+	async function _login(username, password) {
+		const res = await getLogin(username, password)
+		console.log('loggin in..')
+		if (res.status === 200) {
+			setLoggedIn(true)
+			setUser(res.data.user)
+		}else{
+			alert('Error while trying to log in..')
+		}
 	}
+
+	return (
+		splash? <Loading />
+		:
+		<Router>
+		<div className="h-100">
+			<Header cameras={cameras} state={user} _logout={_logout} />
+			<main className="h-100">
+					<Route exact path="/" render={() => <Home ads={ads} cameras={cameras} userState={user} />} />
+					<Route exact path="/login" render={() => <LoginForm _login={_login} />}/>
+					<Route exact path="/user/:id" render={(props) => <UserProfile {...props} userState={user} />}/>
+				<Route exact path="/cam/:any" render={(state) => <CameraView {...state} cameras={cameras} userState={user} />}/>
+				<Route exact path="/signup" component={SignupForm} />
+				<Route path="/404" render={(state) => <NotFound {...state}/>} />
+			</main>
+		</div>
+		</Router>
+	)
 }
 
 export default App

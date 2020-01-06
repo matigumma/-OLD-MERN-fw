@@ -5,7 +5,8 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-
+const cors = require('cors');
+const proxy = require('http-proxy-middleware');
 //const config = require('../config/config');
 const isDev = process.env.NODE_ENV !== 'production';
 const webpackConfig = require('../webpack.config');
@@ -18,6 +19,7 @@ const dbConnection = require('../config/db') // loads our connection to the mong
 const app = express();
 // Configuration
 // ================================================================================================
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));//false?
 app.use(express.json());
 //session:
@@ -34,10 +36,10 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session()) // will call the deserializeUser
 
-
 // API routes
 //require('./routes')(app);
 app.use('/auth', require('./routes/auth'));
+app.use(proxy('/media', { target: 'http://localhost:3000', changeOrigin: true } ));
 
 if (isDev) {
   const compiler = webpack(webpackConfig);

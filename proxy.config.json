@@ -1,0 +1,7 @@
+{
+    "/content/*":{
+        "target": "http://localhost:3000/content/",
+        "secure": false,
+        "logLevel": "d"
+    }
+}

@@ -33,6 +33,7 @@ module.exports = {
       // JS files
       {
         test: /\.jsx?$/,
+        exclude: /node_modules/,
         include: helpers.root('client'),
         loader: 'babel-loader'
       },

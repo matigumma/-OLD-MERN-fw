@@ -1,6 +1,6 @@
 # Compiled files
 dist/
-
+mongo-volume-dev
 # Config file
 config/config.js
 

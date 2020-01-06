@@ -5,6 +5,7 @@ const User = require('../../models/User')
 const passport = require('../../passport')
 
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+
 router.get(
 	'/google/callback',
 	passport.authenticate('google', {
@@ -45,6 +46,7 @@ router.post(
 )
 
 router.post('/logout', (req, res) => {
+	console.log(req)
 	if (req.user) {
 		req.session.destroy()
 		res.clearCookie('connect.sid') // clean up!
@@ -68,7 +70,8 @@ router.post('/signup', (req, res) => {
 			'local.password': password
 		})
 		newUser.save((err, savedUser) => {
-			if (err) return res.json(err)
+			if (err) return res.json({error: err})
+			console.log(savedUser)
 			return res.json(savedUser)
 		})
 	})
